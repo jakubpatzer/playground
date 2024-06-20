@@ -31,3 +31,11 @@ body {
     text-wrap: balance;
   }
 }
+
+
+/* CUSTOM */
+
+.line-through-custom {
+  text-decoration-line: line-through;
+  text-decoration-color: #ff0000;
+}
