@@ -1,11 +1,10 @@
-import Todos from "@/components/Todos";
+import TodosAlt from "@/components/Todos";
 
-export default async function Page() {
-  const resp = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
-  const data = await resp.json()
+
+export default function Page() {
   return (
     <div>
-      <Todos todos={data} />
+      <TodosAlt />
     </div>
   );
 }

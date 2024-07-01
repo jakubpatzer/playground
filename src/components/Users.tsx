@@ -7,13 +7,13 @@ interface User {
   name: string;
 }
 
-const Users = ({ users }: { users: User[] }) => {
-  const [search, setSearch] = useState("");
+const Users = ({ users } : { users: User[] }) => {
+  const [search, setSearch] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
 
   useEffect(() => {
     setFilteredUsers(
-      users.filter((user) =>
+      users.filter((user: User) =>
         user.name.toLowerCase().includes(search.toLowerCase())
       )
     );
@@ -29,7 +29,7 @@ const Users = ({ users }: { users: User[] }) => {
         onChange={(e) => setSearch(e.target.value)}
       />
       {filteredUsers.length > 0 ? (
-        filteredUsers.map((user) => (
+        filteredUsers.map((user: User) => (
           <p className="text-center py-1" key={user.id}>
             {user.name}
           </p>

@@ -18,8 +18,12 @@ const navLinks = [
     url: "/users",
   },
   {
-    name: "Todos (redux)",
+    name: "Todos",
     url: "/todos",
+  },
+  {
+    name: "Memo",
+    url: "/memo",
   },
 ];
 

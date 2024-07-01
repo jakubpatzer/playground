@@ -1,93 +1,94 @@
 "use client";
-
-import React, { useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 interface Todo {
   id: string;
-  title: string;
+  text: string;
   completed: boolean;
 }
 
-type Action =
-  | { type: "ADD"; title: string }
-  | { type: "TOGGLE"; id: string }
-  | { type: "DELETE"; id: string };
+const LOCAL_STORAGE_KEY = "todos";
 
-const reducer = (state: Todo[], action: Action): Todo[] => {
-  switch (action.type) {
-    case "ADD":
-      return [
-        ...state,
-        { id: uuidv4(), title: action.title, completed: false },
-      ];
-    case "DELETE":
-      return state.filter((todo) => todo.id !== action.id);
-    case "TOGGLE":
-      return state.map((todo) =>
-        todo.id === action.id ? { ...todo, completed: !todo.completed } : todo
-      );
-    default:
-      return state;
-  }
-};
+const TodosAlt = () => {
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    // if (typeof window !== undefined) {
+    const localData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return localData ? JSON.parse(localData) : [];
+    // }
+    // return [];
+  });
+  const [text, setText] = useState<string>("");
 
-const Todos = ({ todos }: { todos: Todo[] }) => {
-  const [state, dispatch] = useReducer(reducer, todos);
-  const [inputValue, setInputValue] = useState<string>("");
-
-  const handleAdd = () => {
-    if (inputValue.trim()) {
-      dispatch({ type: "ADD", title: inputValue });
-      setInputValue("");
-    }
+  const handleAdd = (): void => {
+    const newTodo = { id: uuidv4(), text, completed: false };
+    setTodos((prevTodos: Todo[]) => [...prevTodos, newTodo]);
+    setText("");
   };
+
+  const handleDelete = (id: string) => {
+    setTodos((prevTodos: Todo[]) =>
+      prevTodos.filter((todo: Todo) => todo.id !== id)
+    );
+  };
+
+  const handleToggle = (id: string) => {
+    setTodos((prevTodos: Todo[]) =>
+      prevTodos.map((todo: Todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
+
+  const handleReset = () => {
+    setTodos([]);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  };
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
+  }, [todos]);
 
   return (
     <div>
-      <div className="flex justify-center items-start gap-3">
+      <div className="flex gap-2 mb-4">
         <input
+          className="text-black ps-2"
           type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Add a new todo..."
-          className="text-black mb-10 px-1 rounded-sm placeholder-red-500"
+          onChange={(e) => setText(e.target.value)}
+          value={text}
+          placeholder="Add new todo..."
         />
         <button
-          className="px-1 bg-white text-black rounded-sm"
+          className="bg-white text-black rounded-sm px-2"
           onClick={handleAdd}
         >
-          Add Todo
+          Add
+        </button>
+        <button
+          className="bg-red-500 text-white rounded-sm px-2"
+          onClick={handleReset}
+        >
+          Reset
         </button>
       </div>
-      <ul>
-        {state.length ? (
-          state.map((todo) => (
-            <li key={todo.id}>
-              <div>
+      <div>
+        {todos.length > 0
+          ? todos.map((todo: Todo) => (
+              <div key={todo.id} className="flex justify-between mb-4">
                 <p
-                  className={`text-center py-1 cursor-pointer transform transition duration-200 ease-in-out hover:scale-110 ${
-                    todo.completed ? "line-through-custom" : ""
-                  }`}
-                  onClick={() => dispatch({ type: "TOGGLE", id: todo.id })}
+                  className={`${todo.completed && "line-through"}`}
+                  onClick={() => handleToggle(todo.id)}
                 >
-                  {todo.title}
-                  <button
-                    className="ml-5"
-                    onClick={() => dispatch({ type: "DELETE", id: todo.id })}
-                  >
-                    x
-                  </button>
+                  {todo.text}
                 </p>
+                <button onClick={() => handleDelete(todo.id)}>x</button>
               </div>
-            </li>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
-      </ul>
+            ))
+          : null}
+      </div>
     </div>
   );
 };
 
-export default Todos;
+export default TodosAlt;
