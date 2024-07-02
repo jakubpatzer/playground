@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, KeyboardEvent } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 interface Todo {
@@ -8,31 +8,31 @@ interface Todo {
   completed: boolean;
 }
 
-const LOCAL_STORAGE_KEY = "todos";
+const LOCAL_STORAGE_KEY: string = "todos";
 
-const TodosAlt = () => {
+const Todos = () => {
   const [todos, setTodos] = useState<Todo[]>(() => {
-    // if (typeof window !== undefined) {
     const localData = localStorage.getItem(LOCAL_STORAGE_KEY);
     return localData ? JSON.parse(localData) : [];
-    // }
-    // return [];
   });
+
   const [text, setText] = useState<string>("");
 
   const handleAdd = (): void => {
-    const newTodo = { id: uuidv4(), text, completed: false };
-    setTodos((prevTodos: Todo[]) => [...prevTodos, newTodo]);
+    if (text.trim()) {
+      const newTodo = { id: uuidv4(), text: text.trim(), completed: false };
+      setTodos((prevTodos: Todo[]) => [...prevTodos, newTodo]);
+    }
     setText("");
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string): void => {
     setTodos((prevTodos: Todo[]) =>
       prevTodos.filter((todo: Todo) => todo.id !== id)
     );
   };
 
-  const handleToggle = (id: string) => {
+  const handleToggle = (id: string): void => {
     setTodos((prevTodos: Todo[]) =>
       prevTodos.map((todo: Todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -40,9 +40,15 @@ const TodosAlt = () => {
     );
   };
 
-  const handleReset = () => {
+  const handleReset = (): void => {
     setTodos([]);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Enter") {
+      handleAdd();
+    }
   };
 
   useEffect(() => {
@@ -56,6 +62,7 @@ const TodosAlt = () => {
           className="text-black ps-2"
           type="text"
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
           value={text}
           placeholder="Add new todo..."
         />
@@ -75,14 +82,24 @@ const TodosAlt = () => {
       <div>
         {todos.length > 0
           ? todos.map((todo: Todo) => (
-              <div key={todo.id} className="flex justify-between mb-4">
+              <div
+                key={todo.id}
+                className="flex justify-between items-center mb-4"
+              >
                 <p
-                  className={`${todo.completed && "line-through"}`}
+                  className={`cursor-pointer max-w-64 ${
+                    todo.completed && "line-through"
+                  }`}
                   onClick={() => handleToggle(todo.id)}
                 >
                   {todo.text}
                 </p>
-                <button onClick={() => handleDelete(todo.id)}>x</button>
+                <button
+                  className="bg-white text-black px-2 rounded-sm"
+                  onClick={() => handleDelete(todo.id)}
+                >
+                  x
+                </button>
               </div>
             ))
           : null}
@@ -91,4 +108,4 @@ const TodosAlt = () => {
   );
 };
 
-export default TodosAlt;
+export default Todos;

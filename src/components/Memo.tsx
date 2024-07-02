@@ -36,12 +36,12 @@ const Memo = ({ cardsData }: { cardsData: Card[] }) => {
   });
 
   return (
-    <div className="grid grid-cols-2 grid-rows-2 gap-4">
+    <div className="grid grid-cols-2 grid-rows-2 gap-6">
       {cards.length > 0 ? (
         cards.map((card: Card) => (
           <div
             key={card.id}
-            className="bg-white text-black w-24 h-24 flex justify-center items-center cursor-pointer"
+            className="bg-white text-black w-24 h-24 flex justify-center items-center custom-hover"
             onClick={() => handleSelect(card)}
           >
             <p className={`${card.selected ? "visible" : "invisible"}`}>

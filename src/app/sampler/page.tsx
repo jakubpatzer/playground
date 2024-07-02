@@ -1,4 +1,4 @@
-import Blocks from "@/components/Blocks";
+import Blocks from "@/components/Sampler";
 
 export default async function Page() {
   const resp = await fetch('https://jsonplaceholder.typicode.com/photos?_limit=4')

@@ -1,9 +1,9 @@
-import Todos from "@/components/Todos";
+import Time from "@/components/Time";
 
 export default function Page() {
   return (
     <div>
-      <Todos />
+      <Time />
     </div>
   );
 }

@@ -39,3 +39,7 @@ body {
   text-decoration-line: line-through;
   text-decoration-color: #ff0000;
 }
+
+.custom-hover {
+  @apply cursor-pointer transform transition duration-200 ease-in-out hover:scale-110;
+}

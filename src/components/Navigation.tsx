@@ -10,8 +10,8 @@ const navLinks = [
     url: "/",
   },
   {
-    name: "Blocks",
-    url: "/blocks",
+    name: "Sampler",
+    url: "/sampler",
   },
   {
     name: "Users",
@@ -24,6 +24,10 @@ const navLinks = [
   {
     name: "Memo",
     url: "/memo",
+  },
+  {
+    name: "Time",
+    url: "/time",
   },
 ];
 
